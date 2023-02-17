@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using UserPostApp.Middlewares;
 using UserPostApp.Models.DB;
 
 namespace UserPostApp
@@ -11,8 +12,9 @@ namespace UserPostApp
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllersWithViews();
-            builder.Services.AddDbContext<BlogContext>(options => options.UseSqlServer(connectionString: "DefaultConnection"), ServiceLifetime.Singleton);
+            builder.Services.AddDbContext<BlogContext>(options => options.UseSqlite(), ServiceLifetime.Singleton);
             builder.Services.AddSingleton<IBlogRepository, BlogRepository>();
+            builder.Services.AddSingleton<ILogRepository, LogRepository>();
 
             var app = builder.Build();
 
@@ -23,6 +25,8 @@ namespace UserPostApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseMiddleware<LoggingMiddleware>();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

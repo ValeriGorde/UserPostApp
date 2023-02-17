@@ -14,6 +14,9 @@ namespace UserPostApp.Models.DB
 
         public async Task AddUser(User user)
         {
+            user.JoinDate = DateTime.Now;
+            user.Id = Guid.NewGuid();
+
             // Добавление пользователя
             var entry = _context.Entry(user);
             if (entry.State == EntityState.Detached)
@@ -22,5 +25,11 @@ namespace UserPostApp.Models.DB
             // Сохранение изенений
             await _context.SaveChangesAsync();
         }
+        public async Task<User[]> GetUsers() 
+        {
+            return await _context.Users.ToArrayAsync();
+        }
+
+
     }
 }

@@ -8,12 +8,14 @@ namespace UserPostApp.Controllers
     public class HomeController : Controller
     {
         private readonly IBlogRepository _repository;
+        private readonly ILogRepository _repoLog;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger, IBlogRepository repository)
+        public HomeController(ILogger<HomeController> logger, IBlogRepository repository, ILogRepository repoLog)
         {
             _logger = logger;
             _repository = repository;   
+            _repoLog = repoLog; 
         }
 
         public async Task<IActionResult> Index()
@@ -26,8 +28,6 @@ namespace UserPostApp.Controllers
                 LastName = "Petrov",
                 JoinDate = DateTime.Now
             };
-
-            // Добавим в базу
             await _repository.AddUser(newUser);
 
             // Выведем результат
@@ -35,6 +35,12 @@ namespace UserPostApp.Controllers
 
             return View();
         }
+
+        //public async Task<IActionResult> Authors() 
+        //{
+        //    var authors = await _repository.GetUsers();
+        //    return View(authors);
+        //}
 
         public IActionResult Privacy()
         {
